@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Subdomain Takeover PoC – trex.microsoft.com</title>
+  <style>
+    :root { --bg: #0b1220; --card: #121a2b; --accent: #00d4ff; --text: #e8eefc; --muted:#9fb3c8; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 10% 10%, #0f1b33 0%, var(--bg) 55%),
+                  radial-gradient(1000px 700px at 90% 90%, #0f1b33 0%, var(--bg) 55%);
+      color: var(--text); min-height: 100svh; display: grid; place-items: center; padding: 24px;
+    }
+    .card {
+      width: 100%; max-width: 760px; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 28px; backdrop-filter: blur(6px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      animation: pop 420ms cubic-bezier(.2,.8,.2,1);
+    }
+    @keyframes pop { from { transform: translateY(8px); opacity: .0; } to { transform: translateY(0); opacity: 1; } }
+    h1 { margin: 0 0 10px; font-size: clamp(22px, 4vw, 34px); line-height: 1.1; }
+    .host { color: var(--accent); font-weight: 700; word-break: break-all; }
+    p { margin: 10px 0; color: var(--muted); font-size: clamp(14px, 2.4vw, 16px); }
+    .badge {
+      display: inline-block; padding: 6px 10px; border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 999px; font-size: 12px; letter-spacing: .4px; text-transform: uppercase;
+      color: var(--accent); background: rgba(0,212,255,0.08);
+    }
+    .links { margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap; }
+    a.btn {
+      text-decoration: none; border: 1px solid rgba(255,255,255,0.14); padding: 10px 14px; border-radius: 12px;
+      color: var(--text); transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    a.btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.06); }
+    code { background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 6px; }
+    footer { margin-top: 16px; font-size: 12px; color: #7f93a8; }
+  </style>
+</head>
+<body>
+  <!-- PoC for subdomain takeover via Azure Front Door (CNAME → unclaimed *.azurefd.net) -->
+  <!-- Author: Subham Chatterjee | LinkedIn: https://www.linkedin.com/in/subhchatterjee/ -->
+  <!-- Proof token: trex-microsoft-com-takeover-poc-{{2025-08-16TIST}} -->
+  <main class="card">
+    <span class="badge">Security Research PoC</span>
+    <h1>Subdomain Takeover Demonstration</h1>
+    <p>
+      This page is intentionally hosted to demonstrate a <strong>subdomain takeover</strong> risk.
+      The hostname <code class="host" id="host"></code> was pointed via CNAME to an
+      unclaimed Azure Front Door endpoint (<code>*.azurefd.net</code>), allowing control
+      of content under this domain.
+    </p>
+    <p>
+      <strong>Impact:</strong> An attacker could host arbitrary content (e.g., phishing, malware, credential theft)
+      on a trusted subdomain. This PoC is non-malicious and for coordinated disclosure only.
+    </p>
+
+    <div class="links">
+      <a class="btn" href="https://www.linkedin.com/in/subhchatterjee/" rel="noopener">Author: Subham Chatterjee</a>
+      <a class="btn" href="https://aka.ms/security" rel="noopener">Report to Microsoft (MSRC)</a>
+      <a class="btn" href="https://learn.microsoft.com/azure/frontdoor/" rel="noopener">About Azure Front Door</a>
+    </div>
+
+    <footer>
+      If you are the owner of this domain, please remove the dangling CNAME or claim the referenced Azure resource.
+    </footer>
+  </main>
+
+  <script>
+    // Echo the live hostname so screenshots show the exact domain
+    document.getElementById('host').textContent = window.location.hostname;
+  </script>
+</body>
+</html>
